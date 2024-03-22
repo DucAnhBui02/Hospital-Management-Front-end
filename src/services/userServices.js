@@ -1,7 +1,9 @@
 import axios from "../axios";
 
-const userServices = (userName, passWord) => {
+const handleLoginApi = (userName, passWord) => {
   return axios.post("api/login/", { email: userName, password: passWord });
 };
-
-export default userServices;
+const getAllUsers = (inputId) => {
+  return axios.get(`api/get-all-users?id=${inputId}`);
+};
+export { handleLoginApi, getAllUsers };
