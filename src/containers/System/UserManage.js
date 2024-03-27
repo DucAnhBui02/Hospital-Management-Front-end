@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { getAllUsers } from "../../services/userServices";
 import "./UserManage.scss";
+import ModalUser from "./ModalUser";
 class UserManage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       arrUsers: [],
+      isOpenModalUsers: false,
     };
   }
 
@@ -21,11 +22,34 @@ class UserManage extends Component {
     }
   }
 
+  handleAddUser = () => {
+    this.setState({
+      isOpenModalUsers: true,
+    });
+  };
+
+  toggleUsers = () => {
+    this.setState({
+      isOpenModalUsers: !this.state.isOpenModalUsers,
+    });
+  };
   render() {
     let arrUsers = this.state.arrUsers;
     return (
       <>
         <div className="text-center">Manage users</div>
+        <div className="mx-1">
+          <ModalUser
+            isOpen={this.state.isOpenModalUsers}
+            toggleForm={this.toggleUsers}
+          />
+          <button
+            className="btn btn-primary px-3"
+            onClick={() => this.handleAddUser()}
+          >
+            <i className="fas fa-plus "></i>Add new user
+          </button>
+        </div>
         <div className="user-table mx-1 mt-3">
           <table id="customers">
             <tr>
@@ -33,6 +57,7 @@ class UserManage extends Component {
               <th>FirstName</th>
               <th>LastName</th>
               <th>Address</th>
+              <th>Actions</th>
             </tr>
             {arrUsers &&
               arrUsers.map((item, index) => {
@@ -42,6 +67,9 @@ class UserManage extends Component {
                     <td>{item.firstName}</td>
                     <td>{item.lastName}</td>
                     <td>{item.address}</td>
+                    <td>
+                      <button className=""></button>
+                    </td>
                   </tr>
                 );
               })}
