@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getAllUsers } from "../../services/userServices";
+import { getAllUsers, createNewUser } from "../../services/userServices";
 import "./UserManage.scss";
 import ModalUser from "./ModalUser";
 class UserManage extends Component {
@@ -13,15 +13,17 @@ class UserManage extends Component {
   }
 
   async componentDidMount() {
+    await this.getAllUserFromData();
+  }
+
+  getAllUserFromData = async () => {
     let respone = await getAllUsers("ALL");
-    console.log("respone", respone);
     if (respone && respone.errCode === 0) {
       this.setState({
         arrUsers: respone.users,
       });
     }
-  }
-
+  };
   handleAddUser = () => {
     this.setState({
       isOpenModalUsers: true,
@@ -33,6 +35,22 @@ class UserManage extends Component {
       isOpenModalUsers: !this.state.isOpenModalUsers,
     });
   };
+
+  createNewUser = async (data) => {
+    try {
+      let respone = await createNewUser(data);
+      if (respone && respone.errCode !== 0) {
+        alert(respone.errMessage);
+      } else {
+        this.getAllUserFromData();
+        this.setState({
+          isOpenModalUsers: false,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   render() {
     let arrUsers = this.state.arrUsers;
     return (
@@ -42,6 +60,7 @@ class UserManage extends Component {
           <ModalUser
             isOpen={this.state.isOpenModalUsers}
             toggleForm={this.toggleUsers}
+            createNewUser={this.createNewUser}
           />
           <button
             className="btn btn-primary px-3"
@@ -52,27 +71,29 @@ class UserManage extends Component {
         </div>
         <div className="user-table mx-1 mt-3">
           <table id="customers">
-            <tr>
-              <th>Email</th>
-              <th>FirstName</th>
-              <th>LastName</th>
-              <th>Address</th>
-              <th>Actions</th>
-            </tr>
-            {arrUsers &&
-              arrUsers.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{item.email}</td>
-                    <td>{item.firstName}</td>
-                    <td>{item.lastName}</td>
-                    <td>{item.address}</td>
-                    <td>
-                      <button className=""></button>
-                    </td>
-                  </tr>
-                );
-              })}
+            <tbody>
+              <tr>
+                <th>Email</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Address</th>
+                <th>Actions</th>
+              </tr>
+              {arrUsers &&
+                arrUsers.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{item.email}</td>
+                      <td>{item.firstName}</td>
+                      <td>{item.lastName}</td>
+                      <td>{item.address}</td>
+                      <td>
+                        <button className=""></button>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
           </table>
         </div>
       </>
