@@ -2,6 +2,21 @@
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
+
+    .btn-edit {
+        background-color: transparent;
+        outline: none;
+        color: orange;
+        margin-right: 10px;
+        border: none;
+    }
+
+    .btn-delete {
+        background-color: transparent;
+        outline: none;
+        color: red;
+        border: none;
+    }
 }
 
 #customers td,

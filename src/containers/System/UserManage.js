@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getAllUsers, createNewUser } from "../../services/userServices";
+import {
+  getAllUsers,
+  createNewUser,
+  deleteUser,
+} from "../../services/userServices";
 import "./UserManage.scss";
 import ModalUser from "./ModalUser";
 class UserManage extends Component {
@@ -24,6 +28,7 @@ class UserManage extends Component {
       });
     }
   };
+
   handleAddUser = () => {
     this.setState({
       isOpenModalUsers: true,
@@ -42,7 +47,7 @@ class UserManage extends Component {
       if (respone && respone.errCode !== 0) {
         alert(respone.errMessage);
       } else {
-        this.getAllUserFromData();
+        await this.getAllUserFromData();
         this.setState({
           isOpenModalUsers: false,
         });
@@ -51,6 +56,20 @@ class UserManage extends Component {
       console.log(error);
     }
   };
+
+  handleDeleteUser = async (user) => {
+    try {
+      let respone = await deleteUser(user.id);
+      if (respone && respone.errCode === 0) {
+        await this.getAllUserFromData();
+      } else {
+        alert(respone.errMessage);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   render() {
     let arrUsers = this.state.arrUsers;
     return (
@@ -88,7 +107,15 @@ class UserManage extends Component {
                       <td>{item.lastName}</td>
                       <td>{item.address}</td>
                       <td>
-                        <button className=""></button>
+                        <button className="btn-edit">
+                          <i className="fas fa-pencil-alt"></i>
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => this.handleDeleteUser(item)}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </button>
                       </td>
                     </tr>
                   );
