@@ -4,15 +4,19 @@ import {
   getAllUsers,
   createNewUser,
   deleteUser,
+  editUserServices,
 } from "../../services/userServices";
 import "./UserManage.scss";
 import ModalUser from "./ModalUser";
+import ModalEditUser from "./ModalEditUser";
 class UserManage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       arrUsers: [],
       isOpenModalUsers: false,
+      isOpenModalEditUsers: false,
+      userEdit: {},
     };
   }
 
@@ -38,6 +42,12 @@ class UserManage extends Component {
   toggleUsers = () => {
     this.setState({
       isOpenModalUsers: !this.state.isOpenModalUsers,
+    });
+  };
+
+  toggleEditUsers = () => {
+    this.setState({
+      isOpenModalEditUsers: !this.state.isOpenModalEditUsers,
     });
   };
 
@@ -70,6 +80,33 @@ class UserManage extends Component {
     }
   };
 
+  handleEditUser = async (data) => {
+    try {
+      this.setState({
+        isOpenModalEditUsers: true,
+        userEdit: data,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  doEditUser = async (user) => {
+    try {
+      let respone = await editUserServices(user);
+      console.log(respone);
+      if (respone && respone.errCode === 0) {
+        this.setState({
+          isOpenModalEditUsers: false,
+        });
+        await this.getAllUserFromData();
+      } else {
+        alert(respone.errMessage);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   render() {
     let arrUsers = this.state.arrUsers;
     return (
@@ -81,6 +118,14 @@ class UserManage extends Component {
             toggleForm={this.toggleUsers}
             createNewUser={this.createNewUser}
           />
+          {this.state.isOpenModalEditUsers && (
+            <ModalEditUser
+              isOpen={this.state.isOpenModalEditUsers}
+              toggleForm={this.toggleEditUsers}
+              currentUser={this.state.userEdit}
+              editUser={this.doEditUser}
+            />
+          )}
           <button
             className="btn btn-primary px-3"
             onClick={() => this.handleAddUser()}
@@ -107,7 +152,10 @@ class UserManage extends Component {
                       <td>{item.lastName}</td>
                       <td>{item.address}</td>
                       <td>
-                        <button className="btn-edit">
+                        <button
+                          className="btn-edit"
+                          onClick={() => this.handleEditUser(item)}
+                        >
                           <i className="fas fa-pencil-alt"></i>
                         </button>
                         <button
