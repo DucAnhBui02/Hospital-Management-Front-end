@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import HomeHeader from "./HomeHeader";
-import Speciality from "./Section/Speciality";
+import Speciality from "./Section/Specialty";
 class HomePage extends Component {
   render() {
     return (
