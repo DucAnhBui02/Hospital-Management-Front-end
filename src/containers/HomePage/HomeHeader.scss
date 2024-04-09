@@ -139,7 +139,12 @@
     }
 
     .content-down {
-        height: 50px;
+        height: 35%;
+        padding-top: 10px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
 
         .options {
             text-align: center;
